@@ -1,30 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: predict
+  name: predict
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: predict
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: predict
     spec:
-        replicas: 2
-            selector:
-                  matchLabels:
-                          app: predict
-                              strategy:
-                                    type: RollingUpdate
-                                        template:
-                                              metadata:
-                                                      labels:
-                                                                app: predict
-                                                                      spec:
-                                                                              containers:
-                                                                                      - name: predict
-                                                                                                image: <ECR_URI>:<TAG>
-                                                                                                          ports:
-                                                                                                                    - containerPort: 3000
-                                                                                                                              readinessProbe:
-                                                                                                                                          httpGet:
-                                                                                                                                                        path: /health
-                                                                                                                                                                      port: 3000
-                                                                                                                                                                                livenessProbe:
-                                                                                                                                                                                            httpGet:
-                                                                                                                                                                                                          path: /health
-                                                                                                                                                                                                                        port: 3000
-
+      containers:
+      - name: predict
+        image: <ECR_URI>:<TAG>
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
